@@ -135,7 +135,7 @@ public class Docker {
     public DockerImage build(Class<? extends DockerContainer> fixture, File log) throws IOException, InterruptedException {
         if (fixture.getSuperclass() != DockerContainer.class && fixture.getSuperclass() != DynamicDockerContainer.class) {
             // TODO this should append the log output
-            build((Class) fixture.getSuperclass(), log); // build the base image first
+            build((Class) fixture.getSuperclass()); // build the base image first
         }
 
         try {

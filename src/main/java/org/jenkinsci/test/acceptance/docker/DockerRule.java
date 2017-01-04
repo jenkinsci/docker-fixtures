@@ -25,6 +25,7 @@
 package org.jenkinsci.test.acceptance.docker;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.TestRule;
@@ -50,7 +51,25 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
         return this;
     }
 
-    public T get() {
+    public T get() throws IOException, InterruptedException {
+        if (container == null) {
+            // Adapted from WithDocker:
+            Docker docker = new Docker();
+            if (!docker.isAvailable()) {
+                throw new AssumptionViolatedException("Docker is needed for the test");
+            }
+            if (localOnly) {
+                String host = DockerImage.getDockerHost();
+                if (!InetAddress.getByName(host).isLoopbackAddress()) {
+                    throw new AssumptionViolatedException("Docker is needed locally for the test but is running on " + host);
+                }
+            }
+            // Adapted from DockerContainerHolder:
+            buildlog = File.createTempFile("docker-" + type.getSimpleName() + "-build", ".log");
+            runlog = File.createTempFile("docker-" + type.getSimpleName() + "-run", ".log");
+            DockerImage.Starter<T> containerStarter = docker.build(type, buildlog).start(type);
+            container = containerStarter.withLog(runlog).start();
+        }
         return container;
     }
 
@@ -60,22 +79,6 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                // Adapted from WithDocker:
-                Docker docker = new Docker();
-                if (!docker.isAvailable()) {
-                    throw new AssumptionViolatedException("Docker is needed for the test");
-                }
-                if (localOnly) {
-                    String host = DockerImage.getDockerHost();
-                    if (!InetAddress.getByName(host).isLoopbackAddress()) {
-                        throw new AssumptionViolatedException("Docker is needed locally for the test but is running on " + host);
-                    }
-                }
-                // Adapted from DockerContainerHolder:
-                buildlog = File.createTempFile("docker-" + type.getSimpleName() + "-build", ".log");
-                runlog = File.createTempFile("docker-" + type.getSimpleName() + "-run", ".log");
-                DockerImage.Starter<T> containerStarter = docker.build(type, buildlog).start(type);
-                container = containerStarter.withLog(runlog).start();
                 try {
                     base.evaluate();
                 } catch (AssumptionViolatedException e) {
@@ -95,9 +98,11 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
                 } finally {
                     if (buildlog != null) {
                         buildlog.delete();
+                        buildlog = null;
                     }
                     if (runlog != null) {
                         runlog.delete();
+                        runlog = null;
                     }
                     // From DockerContainerHolder:
                     if (container != null) {

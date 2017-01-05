@@ -67,9 +67,11 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
             }
             // Adapted from DockerContainerHolder:
             buildlog = File.createTempFile("docker-" + type.getSimpleName() + "-build", ".log");
+            DockerImage image = docker.build(type, buildlog);
+            buildlog.delete(); // succeeded, no need to display this any more
+            buildlog = null;
             runlog = File.createTempFile("docker-" + type.getSimpleName() + "-run", ".log");
-            DockerImage.Starter<T> containerStarter = docker.build(type, buildlog).start(type);
-            container = containerStarter.withLog(runlog).start();
+            container = image.start(type).withLog(runlog).start();
         }
         return container;
     }

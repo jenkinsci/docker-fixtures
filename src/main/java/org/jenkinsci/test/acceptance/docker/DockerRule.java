@@ -27,6 +27,7 @@ package org.jenkinsci.test.acceptance.docker;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import org.apache.commons.io.FileUtils;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -84,16 +85,8 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
                 } catch (AssumptionViolatedException e) {
                     throw e;
                 } catch (Throwable t) {
-                    // Adapted from FailureDiagnostics:
-                    if (buildlog != null) {
-                        //https://wiki.jenkins-ci.org/display/JENKINS/JUnit+Attachments+Plugin#JUnitAttachmentsPlugin-ByprintingoutthefilenameinaformatthatJenkinswillunderstand
-                        System.out.println(String.format(JUNIT_ATTACHMENT, buildlog.getAbsolutePath()));
-                        buildlog = null; // do not delete in #finished
-                    }
-                    if (runlog != null) {
-                        System.out.println(String.format(JUNIT_ATTACHMENT, runlog.getAbsolutePath()));
-                        runlog = null;
-                    }
+                    dump(buildlog);
+                    dump(runlog);
                     throw t;
                 } finally {
                     if (buildlog != null) {
@@ -111,9 +104,14 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
                     }
                 }
             }
+            private void dump(File log) throws IOException {
+                if (log != null) {
+                    System.out.println("---%<--- " + log.getName());
+                    FileUtils.copyFile(log, System.out);
+                    System.out.println("--->%---");
+                }
+            }
         };
     }
-
-    private static final String JUNIT_ATTACHMENT = "[[ATTACHMENT|%s]]";
 
 }

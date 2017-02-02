@@ -23,7 +23,7 @@ import java.util.jar.JarFile;
 
 /**
  * Entry point to the docker support.
- * <p/>
+ * <p>
  * Use this subsystem by injecting this class into your test.
  *
  * @author Kohsuke Kawaguchi

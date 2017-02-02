@@ -50,7 +50,7 @@ public @interface DockerFixture {
     /**
      * Ip address to bind to
      * @deprecated this assumes you have network knowledge of the running ATH environment which you can not possibly have.
-     *             Docker may be running on a remote machine and as such any address (e.g. <code>127.0.0.5<code>)
+     *             Docker may be running on a remote machine and as such any address (e.g. {@code 127.0.0.5})
      *             you specify may not be reachable.
      */
     @Deprecated

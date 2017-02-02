@@ -26,7 +26,7 @@ public class DynamicDockerContainer extends DockerContainer {
 
     /**
      * Manipulates the provided Dockerfile contents.
-     * This method replaces any occurrence of <code>@@DOCKER_HOST@@<code> with the ip address of the machine running docker.
+     * This method replaces any occurrence of {@code @@DOCKER_HOST@@} with the ip address of the machine running docker.
      * @param contents the original contents of the Dockerfile
      * @return a String with the new contents of the Dockerfile
      */

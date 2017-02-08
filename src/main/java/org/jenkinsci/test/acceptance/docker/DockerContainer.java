@@ -41,7 +41,9 @@ public class DockerContainer implements Closeable {
     public void assertRunning() {
         try {
             JsonNode state = inspect().get("State");
-            if (!"running".equals(state.get("Status").asText())) {
+            if ((state.get("Status") == null && state.get("Running") == null)
+                || (state.get("Status") != null && !"running".equals(state.get("Status").asText()))
+                || (state.get("Running") != null && !"true".equals(state.get("Running").asText()))) {
                 throw new Error("The container is not running: " + state.toString());
             }
         } catch (IOException e) {

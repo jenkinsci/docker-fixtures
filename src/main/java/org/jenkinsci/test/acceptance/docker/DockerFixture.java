@@ -29,7 +29,7 @@ public @interface DockerFixture {
     String id();
 
     /**
-     * Ports that are exposed from this fixture.
+     * TCP ports that are exposed from this fixture.
      *
      * <p>
      * When a container is started, these ports from the container are mapped to
@@ -37,6 +37,16 @@ public @interface DockerFixture {
      * be retried at runtime via {@link DockerContainer#port(int)}.
      */
     int[] ports() default {};
+
+    /**
+     * UDP ports that are exposed from this fixture.
+     *
+     * <p>
+     * When a container is started, these ports from the container are mapped to
+     * random ephemeral ports on the host. The actual ephemeral port number can
+     * be retried at runtime via {@link DockerContainer#port(int)}.
+     */
+    int[] udpPorts() default {};
     
     /**
      * Map container ports to host ports exactly.

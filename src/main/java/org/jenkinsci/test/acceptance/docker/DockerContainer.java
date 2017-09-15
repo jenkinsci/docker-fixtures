@@ -119,6 +119,25 @@ public class DockerContainer implements Closeable {
     }
 
     /**
+     * Finds the ephemeral UDP port that the given container port is mapped to.
+     */
+    public int udpPort(int n) {
+        assertRunning();
+        try {
+            if (sharingHostDockerService()) {
+                return n;
+            }
+            String out = Docker.cmd("port").add(cid, n + "/udp").popen().verifyOrDieWith("docker port command failed").trim();
+            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326"
+                throw new IllegalStateException(format("Udp port %d is not mapped for container %s", n, cid));
+
+            return Integer.parseInt(out.split(":")[1]);
+        } catch (IOException | InterruptedException e) {
+            throw new AssertionError("Failed to figure out udp port map " + n, e);
+        }
+    }
+
+    /**
      * Stops and remove any trace of the container
      */
     public void close() {

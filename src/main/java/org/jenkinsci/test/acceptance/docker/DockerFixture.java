@@ -44,7 +44,7 @@ public @interface DockerFixture {
      * <p>
      * When a container is started, these ports from the container are mapped to
      * random ephemeral ports on the host. The actual ephemeral port number can
-     * be retried at runtime via {@link DockerContainer#port(int)}.
+     * be retried at runtime via {@link DockerContainer#udpPort(int)}.
      */
     int[] udpPorts() default {};
     

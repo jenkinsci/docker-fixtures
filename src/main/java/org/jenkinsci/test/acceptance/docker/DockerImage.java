@@ -235,10 +235,10 @@ public class DockerImage {
             ;
         }
 
-        private String getUdpPortMapping(int UdpPort) {
+        private String getUdpPortMapping(int udpPort) {
             return portOffset == null
-                    ? ipAddress + "::" + UdpPort
-                    : ipAddress + ":" + (portOffset + UdpPort) + ":" + UdpPort + "/udp";
+                    ? ipAddress + "::" + udpPort + "/udp"
+                    : ipAddress + ":" + (portOffset + udpPort) + ":" + udpPort + "/udp";
         }
     }
 }

@@ -24,17 +24,40 @@
 
 package org.jenkinsci.test.acceptance.docker;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import static org.hamcrest.CoreMatchers.*;
 import org.jenkinsci.test.acceptance.docker.fixtures.JavaContainer;
 import org.jenkinsci.utils.process.CommandBuilder;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 
 public class JavaContainerTest {
 
     @Rule
     public DockerRule<JavaContainer> rule = new DockerRule<>(JavaContainer.class);
+
+    @BeforeClass
+    public static void cleanOldImages() throws Exception {
+        Process dockerImages = new ProcessBuilder("docker", "images", "--format", "{{.Repository}}:{{.Tag}}").start();
+        Scanner scanner = new Scanner(dockerImages.getInputStream());
+        List<String> toRemove = new ArrayList<>();
+        while (scanner.hasNext()) {
+            String image = scanner.next();
+            if (image.startsWith("jenkins/")) {
+                toRemove.add(image);
+            }
+        }
+        dockerImages.waitFor();
+        if (!toRemove.isEmpty()) {
+            toRemove.add(0, "docker");
+            toRemove.add(1, "rmi");
+            new ProcessBuilder(toRemove).inheritIO().start().waitFor();
+        }
+    }
 
     @Test
     public void smokes() throws Exception {

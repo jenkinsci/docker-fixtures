@@ -11,7 +11,12 @@ import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Annotates {@link DockerContainer} subtype that exposes fixture-specific methods.
- *
+ * <p>
+ * The fixture should be accompanied by a {@code Dockerfile} resource in a predictable spot (see {@link #dockerfileFolder}).
+ * A fixture class may extend another fixture class.
+ * In this case the {@code FROM} directive should specify an image whose name is {@code jenkins/}
+ * followed by the {@link #id} of the parent fixture; the tag is the first 12 characters of the {@code sha1sum}
+ * of the parent fixture’s {@code Dockerfile}. You will be able to see the tagged parent image names in your log.
  * @author Kohsuke Kawaguchi
  * @author asotobueno
  */

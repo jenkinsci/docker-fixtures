@@ -24,14 +24,17 @@
 
 package org.jenkinsci.test.acceptance.docker;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import org.apache.commons.io.IOUtils;
 import static org.hamcrest.CoreMatchers.*;
 import org.jenkinsci.test.acceptance.docker.fixtures.JavaContainer;
 import org.jenkinsci.utils.process.CommandBuilder;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.AssumptionViolatedException;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 
@@ -42,7 +45,12 @@ public class JavaContainerTest {
 
     @BeforeClass
     public static void cleanOldImages() throws Exception {
-        Process dockerImages = new ProcessBuilder("docker", "images", "--format", "{{.Repository}}:{{.Tag}}").start();
+        Process dockerImages;
+        try {
+            dockerImages = new ProcessBuilder("docker", "images", "--format", "{{.Repository}}:{{.Tag}}").start();
+        } catch (IOException x) {
+            throw new AssumptionViolatedException("could not run docker", x);
+        }
         Scanner scanner = new Scanner(dockerImages.getInputStream());
         List<String> toRemove = new ArrayList<>();
         while (scanner.hasNext()) {
@@ -55,13 +63,18 @@ public class JavaContainerTest {
         if (!toRemove.isEmpty()) {
             toRemove.add(0, "docker");
             toRemove.add(1, "rmi");
-            new ProcessBuilder(toRemove).inheritIO().start().waitFor();
+            Process dockerRmi = new ProcessBuilder(toRemove).redirectErrorStream(true).start();
+            // Cannot use inheritIO from Surefire.
+            IOUtils.copy(dockerRmi.getInputStream(), System.err);
+            dockerRmi.waitFor();
         }
     }
 
     @Test
     public void smokes() throws Exception {
-        assertThat(rule.get().popen(new CommandBuilder("java", "-version")).verifyOrDieWith("could not launch Java"), containsString("openjdk version \"1.8.0_"));
+        JavaContainer c = rule.get();
+        assertThat(c.popen(new CommandBuilder("java", "-version")).verifyOrDieWith("could not launch Java"), containsString("openjdk version \"1.8.0_"));
+        c.sshWithPublicKey(new CommandBuilder("id"));
     }
 
 }

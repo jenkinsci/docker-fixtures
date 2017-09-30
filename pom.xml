@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci</groupId>
         <artifactId>jenkins</artifactId>
-        <version>1.37</version>
+        <version>1.39</version>
         <relativePath />
     </parent>
     <groupId>org.jenkins-ci.test</groupId>
@@ -93,7 +93,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>

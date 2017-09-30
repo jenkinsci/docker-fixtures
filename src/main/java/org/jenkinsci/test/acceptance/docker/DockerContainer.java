@@ -125,7 +125,7 @@ public class DockerContainer implements Closeable {
         try {
             p.destroy();
             // If container fail to start, this produces phone failure that presents container to be removed
-            int killStatus = Docker.cmd("kill").add(cid).build().inheritIO().start().waitFor();
+            int killStatus = Docker.cmd("kill").add(cid).build().start().waitFor();
             Docker.cmd("rm").add(cid)
                     .popen().verifyOrDieWith("Failed to rm " + cid + ". kill completed with " + killStatus);
             if (shutdownHook != null) {

@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci</groupId>
         <artifactId>jenkins</artifactId>
-        <version>1.37</version>
+        <version>1.39</version>
         <relativePath />
     </parent>
     <groupId>org.jenkins-ci.test</groupId>
@@ -38,21 +38,8 @@
   </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.level>7</java.level>
     </properties>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <!-- TODO why does this not get defaulted from main sources? -->
-                    <testSource>1.7</testSource>
-                    <testTarget>1.7</testTarget>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
@@ -94,7 +81,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>

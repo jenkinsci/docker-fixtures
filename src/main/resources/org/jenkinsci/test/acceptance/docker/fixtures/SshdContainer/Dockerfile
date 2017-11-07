@@ -2,10 +2,12 @@
 # Runs sshd and allow the 'test' user to login
 #
 
-FROM ubuntu
+FROM ubuntu:artful-20171019
 
 # install SSHD
-RUN apt-get update -y && apt-get install -y openssh-server
+RUN apt-get update -y && \
+    apt-get install -y \
+        openssh-server=1:7.5p1-10
 RUN mkdir -p /var/run/sshd
 
 # create a test user

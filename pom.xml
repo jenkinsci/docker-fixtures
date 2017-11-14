@@ -34,8 +34,8 @@
         <connection>scm:git:ssh://github.com/jenkinsci/docker-fixtures.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/docker-fixtures.git</developerConnection>
         <url>https://github.com/jenkinsci/docker-fixtures</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.level>7</java.level>
@@ -97,4 +97,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>skip-tests-on-release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+    </profiles>
 </project>

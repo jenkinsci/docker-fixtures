@@ -4,6 +4,10 @@ The Docker fixture system originally in [`acceptance-test-harness`](https://gith
 
 ## Changelog
 
+### 1.2 (2017 Nov 14)
+
+* Updates to `SshdContainer` and `JavaContainer`.
+
 ### 1.1 (2017 Oct 12)
 
 * Fix of status reports for older Docker versions (1.7 claimed).

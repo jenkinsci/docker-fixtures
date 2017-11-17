@@ -19,6 +19,8 @@ pipeline {
                     junit '**/target/surefire-reports/TEST-*.xml'
                 }
             }
+        }
+        stage('another-stage') {
             archiveArtifacts 'target/docker-fixtures-1.4-SNAPSHOT.jar'
         }
     }

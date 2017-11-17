@@ -13,7 +13,7 @@ pipeline {
         stage('main') {
             steps {
                 sh 'mvn -B clean package'
-                 archiveArtifacts 'target/docker-fixtures-1.2-SNAPSHOT.jar'
+                 archiveArtifacts 'target/docker-fixtures-1.4-SNAPSHOT.jar'
             }
             post {
                 success {

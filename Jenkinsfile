@@ -12,12 +12,11 @@ pipeline {
     stages {
         stage('main') {
             steps {
-                sh 'mvn -B clean package'
+                sh 'mvn -B clean verify'
             }
             post {
                 success {
                     junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/docker-fixtures-1.4-SNAPSHOT.jar'
                 }
             }
         }

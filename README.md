@@ -50,6 +50,8 @@ This will launch the container and give you a handle you can use to call fixture
 If the test is run on a system which cannot run the `docker` command,
 the test will be treated as skipped automatically.
 
+When the test case finishes, the container is stopped and cleaned up automatically.
+
 ## Accessing ports
 
 When you specify `ports` in the annotation, you allow services in the fixture to be accessed from the test.

@@ -66,6 +66,10 @@ See the `mercurial-plugin` sources for a complete example of defining and using 
 
 # Changelog
 
+## 1.3 (2017 Dec 05)
+
+* `JavaContainer` was unbuildable after a security update.
+
 ## 1.2 (2017 Nov 14)
 
 * Updates to `SshdContainer` and `JavaContainer`.

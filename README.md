@@ -40,11 +40,11 @@ as detailed in the Javadoc for `DockerFixture`.
 Simply add to your (JUnit 4) test:
 
 ```java
-@Rule
-public DockerRule<MyContainer> container = new DockerRule<>(MyContainer.class);
+@ClassRule
+public static DockerClassRule<MyContainer> docker = new DockerClassRule<>(MyContainer.class);
 ```
 
-If and when you wish to start using the fixture from a test case, call the `get()` method.
+If and when you wish to start using the fixture from a test case, call the `create()` method.
 This will launch the container and give you a handle you can use to call fixture methods.
 
 If the test is run on a system which cannot run the `docker` command,

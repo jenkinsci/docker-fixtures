@@ -66,6 +66,11 @@ See the `mercurial-plugin` sources for a complete example of defining and using 
 
 # Changelog
 
+## 1.4 (2017 Dec 07)
+
+* Added `DockerClassRule` as an alternative to `DockerRule`; preferable when combined with rules imposing per-test timeouts.
+* Added support for UDP port binding.
+
 ## 1.3 (2017 Dec 05)
 
 * `JavaContainer` was unbuildable after a security update.

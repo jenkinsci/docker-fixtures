@@ -83,6 +83,10 @@ public class DockerImage {
             docker.add("-p", starter.getPortMapping(p));
         }
 
+        for (int udpPort : starter.udpPorts) {
+            docker.add("-p", starter.getUdpPortMapping(udpPort));
+        }
+
         docker.add(starter.options);
         docker.add(tag);
         docker.add(starter.args);
@@ -183,6 +187,7 @@ public class DockerImage {
         private String ipAddress = getDockerHost();
         private Integer portOffset;
         private int[] ports;
+        private int[] udpPorts;
         private File log;
 
         public Starter(Class<T> type, DockerImage image) {
@@ -191,6 +196,7 @@ public class DockerImage {
 
             DockerFixture fixtureAnnotation = type.getAnnotation(DockerFixture.class);
             ports = fixtureAnnotation.ports();
+            udpPorts = fixtureAnnotation.udpPorts();
             if (fixtureAnnotation.matchHostPorts()) {
                 portOffset = 0;
             }
@@ -198,6 +204,11 @@ public class DockerImage {
 
         public @Nonnull Starter<T> withPorts(int... ports) {
             this.ports = ports;
+            return this;
+        }
+
+        public @Nonnull Starter<T> withUdpPorts(int... udpPorts) {
+            this.udpPorts = udpPorts;
             return this;
         }
 
@@ -237,6 +248,12 @@ public class DockerImage {
                     ? ipAddress + "::" + port
                     : ipAddress + ":" + (portOffset + port) + ":" + port
             ;
+        }
+
+        private String getUdpPortMapping(int udpPort) {
+            return portOffset == null
+                    ? ipAddress + "::" + udpPort + "/udp"
+                    : ipAddress + ":" + (portOffset + udpPort) + ":" + udpPort + "/udp";
         }
     }
 }

@@ -15,6 +15,8 @@ Note that the typical architecture is that of a single machine with a local Dock
 Tests are assumed to be running on the host itself;
 i.e., this is unlike a multicontainer test system you might orchestrate with Docker Compose.
 
+Probably this library should be deprecated in favor of [testcontainers.org](https://www.testcontainers.org/).
+
 # Usage
 
 ## Defining a fixture

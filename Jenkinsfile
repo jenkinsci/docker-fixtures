@@ -3,11 +3,13 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '20'))
         timeout(time: 1, unit: 'HOURS')
     }
+    // cf. https://github.com/jenkins-infra/documentation/blob/master/ci.adoc
     agent {
-        docker {
-            image 'maven:3.5.0-jdk-8'
-            label 'docker'
-        }
+        label 'docker'
+    }
+    tools {
+        jdk 'jdk8'
+        maven 'mvn'
     }
     stages {
         stage('main') {

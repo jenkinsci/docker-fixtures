@@ -68,6 +68,11 @@ See the `mercurial-plugin` sources for a complete example of defining and using 
 
 # Changelog
 
+## 1.5 (2018 Jan 25)
+
+* Standard containers were again unbuildable after a security update. Now checking this properly in CI.
+* Updated to Guice 4.
+
 ## 1.4 (2017 Dec 07)
 
 * Added `DockerClassRule` as an alternative to `DockerRule`; preferable when combined with rules imposing per-test timeouts.

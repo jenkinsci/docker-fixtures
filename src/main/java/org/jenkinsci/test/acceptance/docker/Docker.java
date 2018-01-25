@@ -94,6 +94,8 @@ public class Docker {
         return build(image, dir, null);
     }
 
+    public static boolean NO_CACHE;
+
     /**
      * Builds a docker image.
      *
@@ -113,6 +115,9 @@ public class Docker {
             processBuilder.redirectOutput(ProcessBuilder.Redirect.appendTo(log));
         } else {
             processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        }
+        if (NO_CACHE) {
+            buildCmd.add("--no-cache=true");
         }
 
         StringBuilder sb = new StringBuilder("Building Docker image `").append(buildCmd.toString()).append("`");

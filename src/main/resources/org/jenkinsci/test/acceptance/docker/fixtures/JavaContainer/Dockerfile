@@ -3,7 +3,7 @@
 #
 
 # cf. SshdContainer/Dockerfile
-FROM jenkins/sshd:ff2527313f5c
+FROM jenkins/sshd:5fed1a40e5de
 
 ENV JDK_VERSION 8u144-b01-2
 RUN apt-get update && \

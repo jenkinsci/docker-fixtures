@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.jenkinsci.test.acceptance.docker;
+package org.jenkinsci.test.acceptance.docker.fixtures;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,13 +30,15 @@ import java.util.List;
 import java.util.Scanner;
 import org.apache.commons.io.IOUtils;
 import static org.hamcrest.CoreMatchers.*;
-import org.jenkinsci.test.acceptance.docker.fixtures.JavaContainer;
+import org.jenkinsci.test.acceptance.docker.Docker;
+import org.jenkinsci.test.acceptance.docker.DockerRule;
 import org.jenkinsci.utils.process.CommandBuilder;
-import org.junit.Test;
+import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.AssumptionViolatedException;
 import org.junit.BeforeClass;
 import org.junit.Rule;
+import org.junit.Test;
 
 public class JavaContainerTest {
 
@@ -68,6 +70,16 @@ public class JavaContainerTest {
             IOUtils.copy(dockerRmi.getInputStream(), System.err);
             dockerRmi.waitFor();
         }
+    }
+
+    @BeforeClass
+    public static void noCache() {
+        Docker.NO_CACHE = true;
+    }
+
+    @AfterClass
+    public static void backToCache() {
+        Docker.NO_CACHE = false;
     }
 
     @Test

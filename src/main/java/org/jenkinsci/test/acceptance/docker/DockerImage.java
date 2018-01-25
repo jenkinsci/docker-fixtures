@@ -83,13 +83,21 @@ public class DockerImage {
             docker.add("-p", starter.getPortMapping(p));
         }
 
+        for (int udpPort : starter.udpPorts) {
+            docker.add("-p", starter.getUdpPortMapping(udpPort));
+        }
+
         docker.add(starter.options);
         docker.add(tag);
         docker.add(starter.args);
 
         File logfile = starter.log;
 
-        System.out.printf("Launching Docker container `%s`: logfile will be at %s\n", docker.toString(), logfile);
+        if (logfile != null) {
+            System.out.printf("Launching Docker container `%s`: logfile will be at %s\n", docker.toString(), logfile);
+        } else {
+            System.out.printf("Launching Docker container `%s`\n", docker.toString());
+        }
 
         Process p = docker.build()
                 .redirectInput(new File(SystemUtils.IS_OS_WINDOWS ? "NUL": "/dev/null"))
@@ -99,14 +107,25 @@ public class DockerImage {
 
         String cid = waitForCid(docker, p);
 
-        Process logProcess = Docker.cmd("logs")
+        ProcessBuilder logProcessBuilder = Docker.cmd("logs")
                 .add("-f")
                 .add(cid)
                 .build()
                 .redirectInput(new File(SystemUtils.IS_OS_WINDOWS ? "NUL": "/dev/null"))
-                .redirectErrorStream(true)
-                .redirectOutput(logfile)
-                .start();
+                .redirectErrorStream(true);
+        if (logfile != null) {
+            logProcessBuilder.redirectOutput(logfile);
+        }
+        Process logProcess = logProcessBuilder.start();
+        if (logfile == null) {
+            new Thread(() -> {
+                try {
+                    IOUtils.copy(logProcess.getInputStream(), System.out);
+                } catch (IOException x) {
+                    x.printStackTrace();
+                }
+            }).start();
+        }
 
         try {
             T t = type.newInstance();
@@ -168,6 +187,7 @@ public class DockerImage {
         private String ipAddress = getDockerHost();
         private Integer portOffset;
         private int[] ports;
+        private int[] udpPorts;
         private File log;
 
         public Starter(Class<T> type, DockerImage image) {
@@ -176,6 +196,7 @@ public class DockerImage {
 
             DockerFixture fixtureAnnotation = type.getAnnotation(DockerFixture.class);
             ports = fixtureAnnotation.ports();
+            udpPorts = fixtureAnnotation.udpPorts();
             if (fixtureAnnotation.matchHostPorts()) {
                 portOffset = 0;
             }
@@ -183,6 +204,11 @@ public class DockerImage {
 
         public @Nonnull Starter<T> withPorts(int... ports) {
             this.ports = ports;
+            return this;
+        }
+
+        public @Nonnull Starter<T> withUdpPorts(int... udpPorts) {
+            this.udpPorts = udpPorts;
             return this;
         }
 
@@ -222,6 +248,12 @@ public class DockerImage {
                     ? ipAddress + "::" + port
                     : ipAddress + ":" + (portOffset + port) + ":" + port
             ;
+        }
+
+        private String getUdpPortMapping(int udpPort) {
+            return portOffset == null
+                    ? ipAddress + "::" + udpPort + "/udp"
+                    : ipAddress + ":" + (portOffset + udpPort) + ":" + udpPort + "/udp";
         }
     }
 }

@@ -41,9 +41,16 @@ public class DockerContainer implements Closeable {
     public void assertRunning() {
         try {
             JsonNode state = inspect().get("State");
-            if (!"running".equals(state.get("Status").asText())) {
-                throw new Error("The container is not running: " + state.toString());
+
+            if (state.get("Status") != null && "running".equals(state.get("Status").asText())) {
+                return;
             }
+
+            if (state.get("Running") != null && "true".equals(state.get("Running").asText())) {
+                return;
+            }
+
+            throw new Error("The container is not running: " + state.toString());
         } catch (IOException e) {
             throw new Error("The container is not running", e);
         }
@@ -75,7 +82,7 @@ public class DockerContainer implements Closeable {
     }
 
     /**
-     * Finds the ephemeral ip that the given container port is bind to.
+     * Finds the ephemeral ip that the given container TCP port is bind to.
      */
     public String ipBound(int n) {
         assertRunning();
@@ -89,6 +96,24 @@ public class DockerContainer implements Closeable {
             return out.split(":")[0];
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to figure out port map " + n, e);
+        }
+    }
+
+    /**
+     * Finds the ephemeral ip that the given container UDP port is bind to.
+     */
+    public String ipUdpBound(int n) {
+        assertRunning();
+        try {
+            if (sharingHostDockerService()) {
+                return getIpAddress();
+            }
+            String out = Docker.cmd("port").add(cid, n + "/udp").popen().verifyOrDieWith("docker port command failed").trim();
+            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326"
+                throw new IllegalStateException(format("Udp port %d is not mapped for container %s", n, cid));
+            return out.split(":")[0];
+        } catch (IOException | InterruptedException e) {
+            throw new AssertionError("Failed to figure out udp port map " + n, e);
         }
     }
 
@@ -112,13 +137,32 @@ public class DockerContainer implements Closeable {
     }
 
     /**
+     * Finds the ephemeral UDP port that the given container port is mapped to.
+     */
+    public int udpPort(int n) {
+        assertRunning();
+        try {
+            if (sharingHostDockerService()) {
+                return n;
+            }
+            String out = Docker.cmd("port").add(cid, n + "/udp").popen().verifyOrDieWith("docker port command failed").trim();
+            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326"
+                throw new IllegalStateException(format("Udp port %d is not mapped for container %s", n, cid));
+
+            return Integer.parseInt(out.split(":")[1]);
+        } catch (IOException | InterruptedException e) {
+            throw new AssertionError("Failed to figure out udp port map " + n, e);
+        }
+    }
+
+    /**
      * Stops and remove any trace of the container
      */
     public void close() {
         try {
             p.destroy();
             // If container fail to start, this produces phone failure that presents container to be removed
-            int killStatus = Docker.cmd("kill").add(cid).build().inheritIO().start().waitFor();
+            int killStatus = Docker.cmd("kill").add(cid).build().start().waitFor();
             Docker.cmd("rm").add(cid)
                     .popen().verifyOrDieWith("Failed to rm " + cid + ". kill completed with " + killStatus);
             if (shutdownHook != null) {

@@ -1,13 +1,16 @@
 #
-# Container for running jenkins.war
+# Container for running Java processes
 #
 
 # cf. SshdContainer/Dockerfile
-FROM jenkins/sshd:f2c9927f0a08
+FROM jenkins/sshd:5fed1a40e5de
 
-# JDK is from Universe
-RUN echo deb http://archive.ubuntu.com/ubuntu precise universe >> /etc/apt/sources.list
-RUN apt-get update -y && apt-get install --no-install-recommends -y software-properties-common
-RUN add-apt-repository ppa:openjdk-r/ppa
-RUN apt-get update
-RUN apt-get install --no-install-recommends -y openjdk-8-jdk openjdk-7-jdk curl wget ant maven
+ENV JDK_VERSION 8u144-b01-2
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+        software-properties-common=0.96.24.17 \
+        openjdk-8-jre-headless=$JDK_VERSION \
+        openjdk-8-jdk-headless=$JDK_VERSION \
+        curl=7.55.1-1ubuntu2.2 \
+        ant=1.9.9-4 \
+        maven=3.5.0-6

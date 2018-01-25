@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.util.EnumSet;
 
 import static java.nio.file.attribute.PosixFilePermission.*;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Represents a server with SSHD.
@@ -76,6 +77,7 @@ public class SshdContainer extends DockerContainer {
     public CommandBuilder ssh() {
         return new CommandBuilder("ssh")
                 .add("-p", port(22), "-o", "StrictHostKeyChecking=no", "-i", getPrivateKey(), "test@" + ipBound(22));
+        // TODO as in CLITest.tempHome this would better use a custom home directory so any existing ~/.ssh/known_hosts is ignored
     }
 
 
@@ -93,8 +95,12 @@ public class SshdContainer extends DockerContainer {
      * Login with SSH public key and run some command.
      */
     public void sshWithPublicKey(CommandBuilder cmd) throws IOException, InterruptedException {
-        if (ssh().add(cmd).system() != 0)
+        ProcessInputStream pis = ssh().add(cmd).popen();
+        // Avoid CommandBuilder.system() as it uses ProcessBuilder.Redirect.INHERIT which confuses Surefire.
+        IOUtils.copy(pis, System.err);
+        if (pis.waitFor() != 0) {
             throw new AssertionError("ssh failed: " + cmd);
+        }
     }
 
     public ProcessInputStream popen(CommandBuilder cmd) throws IOException, InterruptedException {

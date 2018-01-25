@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.jenkins-ci</groupId>
         <artifactId>jenkins</artifactId>
-        <version>1.37</version>
+        <version>1.39</version>
         <relativePath />
     </parent>
     <groupId>org.jenkins-ci.test</groupId>
     <artifactId>docker-fixtures</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
     <name>Docker Fixtures</name>
     <description>Docker rule for JUnit.</description>
     <repositories>
@@ -34,25 +34,12 @@
         <connection>scm:git:ssh://github.com/jenkinsci/docker-fixtures.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/docker-fixtures.git</developerConnection>
         <url>https://github.com/jenkinsci/docker-fixtures</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.level>8</java.level>
     </properties>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <!-- TODO why does this not get defaulted from main sources? -->
-                    <testSource>1.7</testSource>
-                    <testTarget>1.7</testTarget>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
@@ -73,6 +60,7 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>4.0</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -83,6 +71,7 @@
             <groupId>org.jenkins-ci</groupId>
             <artifactId>annotation-indexer</artifactId>
             <version>1.9</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -92,7 +81,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
@@ -108,4 +97,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>skip-tests-on-release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+    </profiles>
 </project>

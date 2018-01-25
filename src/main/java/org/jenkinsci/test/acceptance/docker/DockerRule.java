@@ -28,20 +28,21 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import org.apache.commons.io.FileUtils;
-import org.junit.internal.AssumptionViolatedException;
+import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
  * Starts a Docker container for a test.
+ * @see DockerClassRule
  */
 public final class DockerRule<T extends DockerContainer> implements TestRule {
 
-    private final Class<T> type;
+    final Class<T> type;
     private boolean localOnly;
     private T container;
-    private File buildlog, runlog;
+    private File runlog;
 
     public DockerRule(Class<T> type) {
         this.type = type;
@@ -52,24 +53,36 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
         return this;
     }
 
+    DockerImage build() throws IOException, InterruptedException {
+        // Adapted from WithDocker:
+        Docker docker = new Docker();
+        if (!docker.isAvailable()) {
+            throw new AssumptionViolatedException("Docker is needed for the test");
+        }
+        if (localOnly) {
+            String host = DockerImage.getDockerHost();
+            if (!InetAddress.getByName(host).isLoopbackAddress()) {
+                throw new AssumptionViolatedException("Docker is needed locally for the test but is running on " + host);
+            }
+        }
+        // Adapted from DockerContainerHolder:
+        File buildlog = File.createTempFile("docker-" + type.getSimpleName() + "-build", ".log");
+        DockerImage image = null;
+        try {
+            image = docker.build(type, buildlog);
+        } finally {
+            if (image == null) {
+                dump(buildlog);
+            }
+            buildlog.delete();
+        }
+        return image;
+    }
+
+
     public T get() throws IOException, InterruptedException {
         if (container == null) {
-            // Adapted from WithDocker:
-            Docker docker = new Docker();
-            if (!docker.isAvailable()) {
-                throw new AssumptionViolatedException("Docker is needed for the test");
-            }
-            if (localOnly) {
-                String host = DockerImage.getDockerHost();
-                if (!InetAddress.getByName(host).isLoopbackAddress()) {
-                    throw new AssumptionViolatedException("Docker is needed locally for the test but is running on " + host);
-                }
-            }
-            // Adapted from DockerContainerHolder:
-            buildlog = File.createTempFile("docker-" + type.getSimpleName() + "-build", ".log");
-            DockerImage image = docker.build(type, buildlog);
-            buildlog.delete(); // succeeded, no need to display this any more
-            buildlog = null;
+            DockerImage image = build();
             runlog = File.createTempFile("docker-" + type.getSimpleName() + "-run", ".log");
             container = image.start(type).withLog(runlog).start();
         }
@@ -87,14 +100,9 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
                 } catch (AssumptionViolatedException e) {
                     throw e;
                 } catch (Throwable t) {
-                    dump(buildlog);
                     dump(runlog);
                     throw t;
                 } finally {
-                    if (buildlog != null) {
-                        buildlog.delete();
-                        buildlog = null;
-                    }
                     if (runlog != null) {
                         runlog.delete();
                         runlog = null;
@@ -106,14 +114,15 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
                     }
                 }
             }
-            private void dump(File log) throws IOException {
-                if (log != null) {
-                    System.out.println("---%<--- " + log.getName());
-                    FileUtils.copyFile(log, System.out);
-                    System.out.println("--->%---");
-                }
-            }
         };
+    }
+
+    private void dump(File log) throws IOException {
+        if (log != null) {
+            System.out.println("---%<--- " + log.getName());
+            FileUtils.copyFile(log, System.out);
+            System.out.println("--->%---");
+        }
     }
 
 }

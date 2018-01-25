@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('main') {
             steps {
-                sh 'mvn -B clean verify'
+                sh 'mvn -B clean verify -Dmaven.test.failure.ignore'
             }
             post {
                 success {

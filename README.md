@@ -68,6 +68,10 @@ See the `mercurial-plugin` sources for a complete example of defining and using 
 
 # Changelog
 
+## 1.6 (2018 Feb 05)
+
+* Again fixing standard containers.
+
 ## 1.5 (2018 Jan 25)
 
 * Standard containers were again unbuildable after a security update. Now checking this properly in CI.

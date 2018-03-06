@@ -7,7 +7,10 @@ import org.jenkinsci.utils.process.ProcessUtils;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.lang.String.*;
 
@@ -191,6 +194,17 @@ public class DockerContainer implements Closeable {
         try {
             Docker.cmd("cp").add(cid + ":" + from).add(new File(toPath))
                     .popen().verifyOrDieWith(format("Failed to copy %s to %s", from, toPath));
+            if(sharingHostDockerService()){
+                //docker deaomon causes that cp set owner root, try to change owner
+                String user = System.getProperty("user.name");
+                String owner = Files.getOwner(Paths.get(destFile.getAbsolutePath())).getName();
+                if(!user.equals(owner)) {
+                    String id = InetAddress.getLocalHost().getHostName();
+                    Docker.cmd("exec").add(id,"sudo", "chown", "-R", user, destFile.getAbsoluteFile())
+                            .popen().verifyOrDieWith(format("Failed to copy %s to %s", from, toPath));
+                }
+
+            }
         } catch (IOException | InterruptedException e) {
             return false;
         }

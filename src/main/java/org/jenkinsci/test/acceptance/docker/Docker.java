@@ -134,7 +134,25 @@ public class Docker {
     }
 
     public DockerImage build(Class<? extends DockerContainer> fixture) throws IOException, InterruptedException {
-        return build(fixture, null);
+        File buildlog = File.createTempFile("docker-" + fixture.getSimpleName() + "-build", ".log");
+        DockerImage image = null;
+        try {
+            image = build(fixture, buildlog);
+        } finally {
+            if (image == null) {
+                dump(buildlog);
+            }
+            buildlog.delete();
+        }
+        return image;
+    }
+
+    static void dump(File log) throws IOException {
+        if (log != null) {
+            System.out.println("---%<--- " + log.getName());
+            FileUtils.copyFile(log, System.out);
+            System.out.println("--->%---");
+        }
     }
 
     public DockerImage build(Class<? extends DockerContainer> fixture, File log) throws IOException, InterruptedException {

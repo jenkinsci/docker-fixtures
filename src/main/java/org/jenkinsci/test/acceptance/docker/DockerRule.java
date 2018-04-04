@@ -27,7 +27,6 @@ package org.jenkinsci.test.acceptance.docker;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import org.apache.commons.io.FileUtils;
 import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -65,18 +64,7 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
                 throw new AssumptionViolatedException("Docker is needed locally for the test but is running on " + host);
             }
         }
-        // Adapted from DockerContainerHolder:
-        File buildlog = File.createTempFile("docker-" + type.getSimpleName() + "-build", ".log");
-        DockerImage image = null;
-        try {
-            image = docker.build(type, buildlog);
-        } finally {
-            if (image == null) {
-                dump(buildlog);
-            }
-            buildlog.delete();
-        }
-        return image;
+        return docker.build(type);
     }
 
 
@@ -100,7 +88,7 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
                 } catch (AssumptionViolatedException e) {
                     throw e;
                 } catch (Throwable t) {
-                    dump(runlog);
+                    Docker.dump(runlog);
                     throw t;
                 } finally {
                     if (runlog != null) {
@@ -115,14 +103,6 @@ public final class DockerRule<T extends DockerContainer> implements TestRule {
                 }
             }
         };
-    }
-
-    private void dump(File log) throws IOException {
-        if (log != null) {
-            System.out.println("---%<--- " + log.getName());
-            FileUtils.copyFile(log, System.out);
-            System.out.println("--->%---");
-        }
     }
 
 }

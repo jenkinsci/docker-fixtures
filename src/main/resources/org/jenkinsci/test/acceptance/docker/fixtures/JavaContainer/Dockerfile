@@ -2,10 +2,10 @@
 # Container for running Java processes
 #
 
-# cf. SshdContainer/Dockerfile
-FROM jenkins/sshd:5fed1a40e5de
+# sha1sum ../SshdContainer/Dockerfile | cut -c 1-12
+FROM jenkins/sshd:6c5ecc461e88
 
-ENV JDK_VERSION 8u144-b01-2
+ENV JDK_VERSION 8u162-b12-0ubuntu0.17.10.2
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
         software-properties-common=0.96.24.17 \

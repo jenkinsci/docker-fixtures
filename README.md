@@ -68,6 +68,10 @@ See the `mercurial-plugin` sources for a complete example of defining and using 
 
 # Changelog
 
+## 1.7 (2018 Apr 05)
+
+* Updating standard containers to run in UTF-8 system locale, enabling non-ASCII filenames.
+
 ## 1.6 (2018 Feb 05)
 
 * Again fixing standard containers.

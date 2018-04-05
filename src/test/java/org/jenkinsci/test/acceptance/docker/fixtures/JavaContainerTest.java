@@ -89,16 +89,4 @@ public class JavaContainerTest {
         c.sshWithPublicKey(new CommandBuilder("id"));
     }
 
-    @Test
-    public void locale() throws Exception {
-        JavaContainer c = rule.get();
-        // cf. https://stackoverflow.com/a/4384506/12916
-        assertThat(c.popen(new CommandBuilder("jrunscript", "-e", "'println(java.lang.System.getProperty(\"file.encoding\") + \" vs. \" + java.lang.System.getProperty(\"sun.jnu.encoding\"))'")).verifyOrDieWith("could not run jrunscript"),
-            containsString("UTF-8 vs. UTF-8"));
-        assertThat(c.popen(new CommandBuilder("jrunscript", "-e", "'var f = new java.io.File(\"hello\\u010d\\u0950\"); new java.io.FileOutputStream(f).close(); println(\"name: \" + java.net.URLEncoder.encode(f.name, \"UTF-8\")); println(\"exists: \" + f.file)'")).verifyOrDieWith("could not run jrunscript"),
-            allOf(containsString("exists: true"), containsString("name: hello%C4%8D%E0%A5%90")));
-        assertThat(c.popen(new CommandBuilder("sh", "-c", "'ls | native2ascii -encoding UTF-8'")).verifyOrDieWith("could not run ls"),
-            containsString("hello\\u010d\\u0950"));
-    }
-
 }

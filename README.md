@@ -68,6 +68,10 @@ See the `mercurial-plugin` sources for a complete example of defining and using 
 
 # Changelog
 
+## 1.8 (2018 May 11)
+
+* Standard containers no longer attempt to pin package versions at all.
+
 ## 1.7 (2018 Apr 05)
 
 * Updating standard containers to run in UTF-8 system locale, enabling non-ASCII filenames.

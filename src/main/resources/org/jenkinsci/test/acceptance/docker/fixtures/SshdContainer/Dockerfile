@@ -2,12 +2,12 @@
 # Runs sshd and allow the 'test' user to login
 #
 
-FROM ubuntu:artful-20180227
+FROM ubuntu:bionic
 
 # install SSHD
 RUN apt-get update -y && \
     apt-get install -y \
-        openssh-server=1:7.5p1-10ubuntu0.1 \
+        openssh-server \
         locales
 RUN mkdir -p /var/run/sshd
 
@@ -19,10 +19,6 @@ RUN useradd test -d /home/test && \
     chown -R test:test /home/test && \
     chmod 0600 /home/test/.ssh/authorized_keys && \
     echo "test:test" | chpasswd
-
-RUN echo "KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1" >> /etc/ssh/sshd_config
-
-RUN echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com,hmac-md5,hmac-sha1,hmac-sha1-96,hmac-md5-96" >> /etc/ssh/sshd_config
 
 # https://stackoverflow.com/a/38553499/12916
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \

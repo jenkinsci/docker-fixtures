@@ -8,7 +8,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-
 import static java.lang.String.*;
 
 /**
@@ -179,7 +178,10 @@ public class DockerContainer implements Closeable {
      * @param from the absolute path of the resource to copy
      * @param toPath the absolute path of the destination directory
      * @return {@code true}  if the copy was a success otherwise {@code false}
+     * @deprecated do not call inside container. File ownership does not work the same way for copying from one docker container to another,
+     * see https://forums.docker.com/t/can-docker-cp-set-user-id-and-group/21562
      */
+    @Deprecated
     public boolean cp(String from, String toPath) {
         assertRunning();
         File srcFile = new File(from);

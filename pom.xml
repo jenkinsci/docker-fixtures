@@ -52,6 +52,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.level>8</java.level>
+        <findbugs.failOnError>false</findbugs.failOnError> <!-- TODO -->
     </properties>
     <dependencies>
         <dependency>

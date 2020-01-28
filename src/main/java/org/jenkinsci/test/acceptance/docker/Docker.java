@@ -1,25 +1,21 @@
 package org.jenkinsci.test.acceptance.docker;
 
-import com.google.inject.Inject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.utils.process.CommandBuilder;
 import org.jvnet.hudson.annotation_indexer.Index;
 
 import javax.annotation.CheckForNull;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
 
 /**
  * Entry point to the docker support.
@@ -29,23 +25,16 @@ import java.util.jar.JarFile;
  * @author Kohsuke Kawaguchi
  * @author asotobueno
  */
-@Singleton
 public class Docker {
 
     /**
      * Command to invoke docker.
      */
-    @Inject(optional = true)
-    @Named("docker")
-    private static String stringDockerCmd = "docker";
+    private static final List<String> dockerCmd = Collections.singletonList("docker");
 
-    private static List<String> dockerCmd;// = Arrays.asList("docker");
-
-    @Inject(optional = true)
     public ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
     public Docker() {
-        dockerCmd = Arrays.asList(stringDockerCmd);
     }
 
     public static CommandBuilder cmd(String... cmd) {

@@ -9,7 +9,7 @@
     </parent>
     <groupId>org.jenkins-ci.test</groupId>
     <artifactId>docker-fixtures</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9</version>
     <name>Docker Fixtures</name>
     <description>Docker rule for JUnit.</description>
     <repositories>
@@ -34,7 +34,7 @@
         <connection>scm:git:ssh://github.com/jenkinsci/docker-fixtures.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/docker-fixtures.git</developerConnection>
         <url>https://github.com/jenkinsci/docker-fixtures</url>
-        <tag>HEAD</tag>
+        <tag>docker-fixtures-1.9</tag>
     </scm>
     <build>
         <plugins>

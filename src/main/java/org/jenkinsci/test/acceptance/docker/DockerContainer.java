@@ -159,13 +159,14 @@ public class DockerContainer implements Closeable {
      */
     public void close() {
         try {
-            p.destroy();
-            // If container fail to start, this produces phone failure that presents container to be removed
-            int killStatus = Docker.cmd("kill").add(cid).build().start().waitFor();
-            Docker.cmd("rm").add(cid)
-                    .popen().verifyOrDieWith("Failed to rm " + cid + ". kill completed with " + killStatus);
             if (shutdownHook != null) {
+                p.destroy();
+                // If container fail to start, this produces phone failure that presents container to be removed
+                int killStatus = Docker.cmd("kill").add(cid).build().start().waitFor();
+                Docker.cmd("rm").add(cid)
+                    .popen().verifyOrDieWith("Failed to rm " + cid + ". kill completed with " + killStatus);
                 Runtime.getRuntime().removeShutdownHook(shutdownHook);
+                shutdownHook = null;
             }
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to close down docker container " + cid, e);

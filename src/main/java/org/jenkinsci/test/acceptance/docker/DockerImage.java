@@ -4,7 +4,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.jenkinsci.utils.process.CommandBuilder;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -202,44 +201,44 @@ public class DockerImage {
             }
         }
 
-        public @Nonnull Starter<T> withPorts(int... ports) {
+        public /*@Nonnull*/ Starter<T> withPorts(int... ports) {
             this.ports = ports;
             return this;
         }
 
-        public @Nonnull Starter<T> withUdpPorts(int... udpPorts) {
+        public /*@Nonnull*/ Starter<T> withUdpPorts(int... udpPorts) {
             this.udpPorts = udpPorts;
             return this;
         }
 
-        public @Nonnull Starter<T> withPortOffset(Integer portOffset) {
+        public /*@Nonnull*/ Starter<T> withPortOffset(Integer portOffset) {
             this.portOffset = portOffset;
             return this;
         }
 
-        public @Nonnull Starter<T> withIpAddress(String ipAddress) {
+        public /*@Nonnull*/ Starter<T> withIpAddress(String ipAddress) {
             this.ipAddress = ipAddress;
             return this;
         }
 
         // TODO do not abuse CommandBuilder
-        public @Nonnull Starter<T> withOptions(CommandBuilder options) {
+        public /*@Nonnull*/ Starter<T> withOptions(CommandBuilder options) {
             this.options = options;
             return this;
         }
 
         // TODO do not abuse CommandBuilder
-        public @Nonnull Starter<T> withArgs(CommandBuilder args) {
+        public /*@Nonnull*/ Starter<T> withArgs(CommandBuilder args) {
             this.args = args;
             return this;
         }
 
-        public @Nonnull Starter<T> withLog(File log) {
+        public /*@Nonnull*/ Starter<T> withLog(File log) {
             this.log = log;
             return this;
         }
 
-        public @Nonnull T start() throws InterruptedException, IOException {
+        public /*@Nonnull*/ T start() throws InterruptedException, IOException {
             return image.start(this, type);
         }
 

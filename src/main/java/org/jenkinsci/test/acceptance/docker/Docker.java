@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.jenkinsci.utils.process.CommandBuilder;
 import org.jvnet.hudson.annotation_indexer.Index;
 
-import javax.annotation.CheckForNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,7 +91,7 @@ public class Docker {
      * @param dir   Directory that contains Dockerfile
      * @param log   Log file to store image building output
      */
-    private DockerImage build(String image, File dir, @CheckForNull File log) throws IOException, InterruptedException {
+    private DockerImage build(String image, File dir, /*@CheckForNull*/ File log) throws IOException, InterruptedException {
         // compute tag from the content of Dockerfile
         String tag = getDockerFileHash(dir);
         String fullTag = image + ":" + tag;

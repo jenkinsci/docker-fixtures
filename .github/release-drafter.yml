@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: docker-fixtures-$NEXT_MINOR_VERSION

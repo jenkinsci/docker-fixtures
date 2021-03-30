@@ -214,6 +214,9 @@ public class DockerContainer implements Closeable {
      * IP address of this container reachable through the bridge.
      */
     public String getIpAddress() throws IOException {
+        if (System.getenv("DOCKER_FIXTURES_NETWORK") != null) {
+            return inspect().get("NetworkSettings").get("Networks").get(System.getenv("DOCKER_FIXTURES_NETWORK")).get("IPAddress").asText();
+        }
         return inspect().get("NetworkSettings").get("IPAddress").asText();
     }
 

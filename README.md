@@ -59,6 +59,9 @@ When the test case finishes, the container is stopped and cleaned up automatical
 When you specify `ports` in the annotation, you allow services in the fixture to be accessed from the test.
 Always use the `ipBound` and `port` methods on each container to determine where to make the actual connection.
 
+## Custom networks
+If you want your docker containers to connect to a custom network you can set the environment variable `DOCKER_FIXTURES_NETWORK` to the name of the network you want to use.
+
 ## Example
 
 See the `mercurial-plugin` sources for a complete example of defining and using a fixture, including inheritance:

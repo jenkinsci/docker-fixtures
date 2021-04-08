@@ -78,6 +78,9 @@ public class DockerImage {
     private <T extends DockerContainer> T start(Starter starter, Class<T> type) throws InterruptedException, IOException {
         CommandBuilder docker = Docker.cmd("run");
         docker.add("-d");
+        if (starter.network != null) {
+            docker.add("--network", starter.network);
+        }
         for (int p : starter.ports) {
             docker.add("-p", starter.getPortMapping(p));
         }
@@ -188,6 +191,7 @@ public class DockerImage {
         private int[] ports;
         private int[] udpPorts;
         private File log;
+        private String network;
 
         public Starter(Class<T> type, DockerImage image) {
             this.type = type;
@@ -199,6 +203,7 @@ public class DockerImage {
             if (fixtureAnnotation.matchHostPorts()) {
                 portOffset = 0;
             }
+            network = System.getenv("DOCKER_FIXTURES_NETWORK");
         }
 
         public /*@Nonnull*/ Starter<T> withPorts(int... ports) {

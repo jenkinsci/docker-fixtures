@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -154,9 +155,7 @@ public class Docker {
                 throw new AssertionError(fixture + " is missing @DockerFixture");
             }
 
-            File dir = File.createTempFile("Dockerfile", "dir");
-            dir.delete();
-            dir.mkdirs();
+            File dir = Files.createTempDirectory("Dockerfile" + "dir").toFile();
             try {
                 copyDockerfileDirectory(fixture, f, dir);
                 return build("jenkins/" + f.id(), dir, log);

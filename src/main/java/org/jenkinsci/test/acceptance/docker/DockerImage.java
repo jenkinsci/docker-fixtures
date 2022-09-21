@@ -1,7 +1,7 @@
 package org.jenkinsci.test.acceptance.docker;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.jenkinsci.utils.process.CommandBuilder;
 
 import java.io.File;

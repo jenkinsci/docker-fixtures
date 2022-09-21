@@ -8,7 +8,7 @@ pipeline {
         label 'docker'
     }
     tools {
-        jdk 'jdk8'
+        jdk 'jdk17'
         maven 'mvn'
     }
     stages {

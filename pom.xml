@@ -9,7 +9,7 @@
     </parent>
     <groupId>org.jenkins-ci.test</groupId>
     <artifactId>docker-fixtures</artifactId>
-    <version>1.13-SNAPSHOT</version>
+    <version>${changelist}</version>
     <name>Docker Fixtures</name>
     <description>Docker rule for JUnit.</description>
     <repositories>
@@ -31,10 +31,10 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:ssh://github.com/jenkinsci/docker-fixtures.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/docker-fixtures.git</developerConnection>
-        <url>https://github.com/jenkinsci/docker-fixtures</url>
-        <tag>HEAD</tag>
+        <connection>scm:git:ssh://github.com/${gitHubRepo}.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/${gitHubRepo}.git</developerConnection>
+        <url>https://github.com/${gitHubRepo}</url>
+        <tag>${scmTag}</tag>
     </scm>
     <build>
         <plugins>
@@ -50,6 +50,8 @@
         </plugins>
     </build>
     <properties>
+        <changelist>999999-SNAPSHOT</changelist>
+        <gitHubRepo>jenkinsci/docker-fixtures</gitHubRepo>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spotbugs.failOnError>false</spotbugs.failOnError> <!-- TODO -->
     </properties>

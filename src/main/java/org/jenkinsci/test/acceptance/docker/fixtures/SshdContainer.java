@@ -1,7 +1,7 @@
 package org.jenkinsci.test.acceptance.docker.fixtures;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.jenkinsci.test.acceptance.docker.DockerContainer;
 import org.jenkinsci.test.acceptance.docker.DockerFixture;
 import org.jenkinsci.utils.process.CommandBuilder;

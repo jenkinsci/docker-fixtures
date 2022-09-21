@@ -155,7 +155,7 @@ public class Docker {
                 throw new AssertionError(fixture + " is missing @DockerFixture");
             }
 
-            File dir = Files.createTempDirectory("Dockerfile" + "dir").toFile();
+            File dir = Files.createTempDirectory("docker-build").toFile();
             try {
                 copyDockerfileDirectory(fixture, f, dir);
                 return build("jenkins/" + f.id(), dir, log);

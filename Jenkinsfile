@@ -1,5 +1,6 @@
 pipeline {
     options {
+        disableConcurrentBuilds abortPrevious: true
         buildDiscarder(logRotator(numToKeepStr: '20'))
         timeout(time: 1, unit: 'HOURS')
     }
@@ -14,7 +15,7 @@ pipeline {
     stages {
         stage('main') {
             steps {
-                sh 'mvn -B clean verify -Dmaven.test.failure.ignore'
+                sh 'mvn -B -ntp clean verify -Dmaven.test.failure.ignore'
             }
             post {
                 success {

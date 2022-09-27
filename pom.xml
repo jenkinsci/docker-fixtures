@@ -5,13 +5,14 @@
         <groupId>org.jenkins-ci</groupId>
         <artifactId>jenkins</artifactId>
         <version>1.88</version>
-        <relativePath />
+        <relativePath/>
     </parent>
     <groupId>org.jenkins-ci.test</groupId>
     <artifactId>docker-fixtures</artifactId>
     <version>${changelist}</version>
     <name>Docker Fixtures</name>
     <description>Docker rule for JUnit.</description>
+    <url>https://github.com/jenkinsci/docker-fixtures</url>
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>

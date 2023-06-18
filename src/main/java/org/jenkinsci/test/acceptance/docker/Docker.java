@@ -1,5 +1,6 @@
 package org.jenkinsci.test.acceptance.docker;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.utils.process.CommandBuilder;
@@ -83,6 +84,7 @@ public class Docker {
         return build(image, dir, null);
     }
 
+    @SuppressFBWarnings(value = "MS_SHOULD_BE_FINAL", justification = "TODO needs triage")
     public static boolean NO_CACHE;
 
     /**

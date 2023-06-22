@@ -76,7 +76,7 @@ public class SshdContainer extends DockerContainer {
      */
     public CommandBuilder ssh() {
         return new CommandBuilder("ssh")
-                .add("-p", port(22), "-o", "StrictHostKeyChecking=no", "-i", getPrivateKey(), "test@" + ipBound(22));
+                .add("-p", port(22), "-F", "none", "-o", "IdentitiesOnly=yes", "-o", "StrictHostKeyChecking=no", "-i", getPrivateKey(), "test@" + ipBound(22));
         // TODO as in CLITest.tempHome this would better use a custom home directory so any existing ~/.ssh/known_hosts is ignored
     }
 

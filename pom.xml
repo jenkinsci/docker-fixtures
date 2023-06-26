@@ -55,7 +55,6 @@
         <gitHubRepo>jenkinsci/docker-fixtures</gitHubRepo>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spotbugs.failOnError>false</spotbugs.failOnError> <!-- TODO -->
-        <maven.compiler.release>8</maven.compiler.release> <!-- TODO until dropping Java 8 support in consuming plugins -->
         <!-- TODO triage violations -->
         <spotbugs.threshold>High</spotbugs.threshold>
     </properties>

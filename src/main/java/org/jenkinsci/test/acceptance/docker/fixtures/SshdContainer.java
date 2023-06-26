@@ -1,5 +1,6 @@
 package org.jenkinsci.test.acceptance.docker.fixtures;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.jenkinsci.test.acceptance.docker.DockerContainer;
@@ -63,6 +64,7 @@ public class SshdContainer extends DockerContainer {
         return privateKeyEnc;
     }
 
+    @SuppressFBWarnings(value = "DM_DEFAULT_ENCODING", justification = "TODO needs triage")
     public String getPrivateKeyString() {
         try {
             return new String(Files.readAllBytes(getPrivateKey().toPath()));

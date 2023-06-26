@@ -1,5 +1,6 @@
 package org.jenkinsci.test.acceptance.docker;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -39,6 +40,7 @@ public class Resource {
         }
     }
 
+    @SuppressFBWarnings(value = "DM_DEFAULT_ENCODING", justification = "TODO needs triage")
     public Reader asReader() {
         try {
             return new InputStreamReader(url.openStream());

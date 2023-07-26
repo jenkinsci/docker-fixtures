@@ -76,7 +76,7 @@ public class DockerContainer implements Closeable {
         return logfile;
     }
 
-    public int getPid() {
+    public long getPid() {
         return ProcessUtils.getPid(p);
     }
 

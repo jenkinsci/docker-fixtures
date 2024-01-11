@@ -90,9 +90,10 @@ public class DockerContainer implements Closeable {
                 return getIpAddress();
             }
             String out = Docker.cmd("port").add(cid, n).popen().verifyOrDieWith("docker port command failed").trim();
-            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326"
+            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326" or [::]:55326
                 throw new IllegalStateException(format("Port %d is not mapped for container %s", n, cid));
-            return out.split(":")[0];
+            // assumes it is published only in ipv6 or only in ipv4
+            return ipv6Enabled() ? out.substring(1,out.lastIndexOf(":") - 1) : out.split(":")[0];
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to figure out port map " + n, e);
         }
@@ -108,9 +109,9 @@ public class DockerContainer implements Closeable {
                 return getIpAddress();
             }
             String out = Docker.cmd("port").add(cid, n + "/udp").popen().verifyOrDieWith("docker port command failed").trim();
-            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326"
+            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326" or [::]:55326
                 throw new IllegalStateException(format("Udp port %d is not mapped for container %s", n, cid));
-            return out.split(":")[0];
+            return ipv6Enabled() ? out.substring(1,out.lastIndexOf(":") -1) : out.split(":")[0];
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to figure out udp port map " + n, e);
         }
@@ -126,10 +127,10 @@ public class DockerContainer implements Closeable {
                 return n;
             }
             String out = Docker.cmd("port").add(cid, n).popen().verifyOrDieWith("docker port command failed").trim();
-            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326"
+            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326" or [::]:55326
                 throw new IllegalStateException(format("Port %d is not mapped for container %s", n, cid));
 
-            return Integer.parseInt(out.split(":")[1]);
+            return Integer.parseInt(out.split(":")[ipv6Enabled() ? 3 : 1]);
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to figure out port map " + n, e);
         }
@@ -145,10 +146,10 @@ public class DockerContainer implements Closeable {
                 return n;
             }
             String out = Docker.cmd("port").add(cid, n + "/udp").popen().verifyOrDieWith("docker port command failed").trim();
-            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326"
+            if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326" or [::]:55326
                 throw new IllegalStateException(format("Udp port %d is not mapped for container %s", n, cid));
 
-            return Integer.parseInt(out.split(":")[1]);
+            return Integer.parseInt(out.split(":")[ipv6Enabled() ? 3 : 1]);
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to figure out udp port map " + n, e);
         }
@@ -214,10 +215,11 @@ public class DockerContainer implements Closeable {
      * IP address of this container reachable through the bridge.
      */
     public String getIpAddress() throws IOException {
+        String ipLabel = ipv6Enabled() ? "GlobalIPv6Address" : "IPAddress";
         if (System.getenv("DOCKER_FIXTURES_NETWORK") != null) {
-            return inspect().get("NetworkSettings").get("Networks").get(System.getenv("DOCKER_FIXTURES_NETWORK")).get("IPAddress").asText();
+            return inspect().get("NetworkSettings").get("Networks").get(System.getenv("DOCKER_FIXTURES_NETWORK")).get(ipLabel).asText();
         }
-        return inspect().get("NetworkSettings").get("IPAddress").asText();
+        return inspect().get("NetworkSettings").get(ipLabel).asText();
     }
 
     @Override
@@ -232,5 +234,13 @@ public class DockerContainer implements Closeable {
      */
     public boolean sharingHostDockerService() {
         return Boolean.valueOf(System.getenv("SHARED_DOCKER_SERVICE"));
+    }
+
+    public static boolean ipv6Enabled() {
+        return Boolean.getBoolean("java.net.preferIPv6Addresses");
+    }
+
+    public static String encloseInBrackets(String toEnclose) {
+        return String.format("[%s]", toEnclose);
     }
 }

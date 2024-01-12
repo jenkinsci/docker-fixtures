@@ -9,7 +9,7 @@
     </parent>
     <groupId>org.jenkins-ci.test</groupId>
     <artifactId>docker-fixtures</artifactId>
-    <version>${changelist}--TEST-IPV6</version>
+    <version>${changelist}</version>
     <name>Docker Fixtures</name>
     <description>Docker rule for JUnit.</description>
     <url>https://github.com/jenkinsci/docker-fixtures</url>

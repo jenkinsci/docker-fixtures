@@ -93,7 +93,7 @@ public class DockerContainer implements Closeable {
             if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326" or [::]:55326
                 throw new IllegalStateException(format("Port %d is not mapped for container %s", n, cid));
             // assumes it is published only in ipv6 or only in ipv4
-            return ipv6Enabled() ? out.substring(1,out.lastIndexOf(":") - 1) : out.split(":")[0];
+            return out.substring(0,out.lastIndexOf(":")).replaceAll("[\\[\\]]","");
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to figure out port map " + n, e);
         }
@@ -111,7 +111,7 @@ public class DockerContainer implements Closeable {
             String out = Docker.cmd("port").add(cid, n + "/udp").popen().verifyOrDieWith("docker port command failed").trim();
             if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326" or [::]:55326
                 throw new IllegalStateException(format("Udp port %d is not mapped for container %s", n, cid));
-            return ipv6Enabled() ? out.substring(1,out.lastIndexOf(":") -1) : out.split(":")[0];
+            return out.substring(0,out.lastIndexOf(":")).replaceAll("[\\[\\]]","");
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to figure out udp port map " + n, e);
         }
@@ -130,7 +130,7 @@ public class DockerContainer implements Closeable {
             if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326" or [::]:55326
                 throw new IllegalStateException(format("Port %d is not mapped for container %s", n, cid));
 
-            return Integer.parseInt(out.split(":")[ipv6Enabled() ? 3 : 1]);
+            return Integer.parseInt(out.substring(out.lastIndexOf(":") + 1, out.length()));
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to figure out port map " + n, e);
         }
@@ -149,7 +149,7 @@ public class DockerContainer implements Closeable {
             if (out.isEmpty())  // expected to return single line like "0.0.0.0:55326" or [::]:55326
                 throw new IllegalStateException(format("Udp port %d is not mapped for container %s", n, cid));
 
-            return Integer.parseInt(out.split(":")[ipv6Enabled() ? 3 : 1]);
+            return Integer.parseInt(out.substring(out.lastIndexOf(":") + 1, out.length()));
         } catch (IOException | InterruptedException e) {
             throw new AssertionError("Failed to figure out udp port map " + n, e);
         }
@@ -240,7 +240,4 @@ public class DockerContainer implements Closeable {
         return Boolean.getBoolean("java.net.preferIPv6Addresses");
     }
 
-    public static String encloseInBrackets(String toEnclose) {
-        return String.format("[%s]", toEnclose);
-    }
 }

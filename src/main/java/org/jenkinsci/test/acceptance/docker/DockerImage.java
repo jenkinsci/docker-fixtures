@@ -262,7 +262,7 @@ public class DockerImage {
         }
 
         private static String addBracketsIfNeeded(String ipAddress) {
-            return (DockerContainer.ipv6Enabled() && !ipAddress.contains("[")) ? DockerContainer.encloseInBrackets(ipAddress) : ipAddress;
+            return DockerContainer.ipv6Enabled() && !ipAddress.contains("[") ? String.format("[%s]", ipAddress) : ipAddress;
         }
     }
 }

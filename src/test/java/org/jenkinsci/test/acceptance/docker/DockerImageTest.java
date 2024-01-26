@@ -10,13 +10,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.net.InetAddress;
+
 @RunWith(MockitoJUnitRunner.class)
 public class DockerImageTest {
 
     private static final String DOCKER_HOST_IP= "42.42.42.42";
     private static final String DOCKER_HOST_SOCKET= "unix:///var/run/foo.sock";
     private static final String DOCKER_HOST_INVALID= "hfdsdfah";
-    private static final String DOCKER_HOST_LOCALHOST= "127.0.0.1";
+    private static final String DOCKER_HOST_LOCALHOST= InetAddress.getLoopbackAddress().getHostAddress();
 
     @Mock
     DockerImage.DockerHostResolver dockerHostResolver;
@@ -40,7 +42,7 @@ public class DockerImageTest {
         DockerImage dockerImage = new DockerImage("a");
         dockerImage.dockerHostResolver = dockerHostResolver;
 
-        Assert.assertThat(dockerImage.getDockerHost(), CoreMatchers.is("127.0.0.1"));
+        Assert.assertThat(dockerImage.getDockerHost(), CoreMatchers.is(DOCKER_HOST_LOCALHOST));
     }
 
     @Test

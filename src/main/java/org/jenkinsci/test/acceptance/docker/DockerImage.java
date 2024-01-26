@@ -16,7 +16,7 @@ import java.net.URI;
  */
 public class DockerImage {
 
-    public static final String DEFAULT_DOCKER_HOST = "127.0.0.1";
+    public static final String DEFAULT_DOCKER_HOST = InetAddress.getLoopbackAddress().getHostAddress();
     public final String tag;
     static DockerHostResolver dockerHostResolver = new DockerHostResolver();
 
@@ -248,16 +248,21 @@ public class DockerImage {
         }
 
         private String getPortMapping(int port) {
+            // docker command needs ipv6 addresses in brackets
             return portOffset == null
-                    ? ipAddress + "::" + port
-                    : ipAddress + ":" + (portOffset + port) + ":" + port
+                    ? addBracketsIfNeeded(ipAddress) + "::" + port
+                    : addBracketsIfNeeded(ipAddress) + ":" + (portOffset + port) + ":" + port
             ;
         }
 
         private String getUdpPortMapping(int udpPort) {
             return portOffset == null
-                    ? ipAddress + "::" + udpPort + "/udp"
-                    : ipAddress + ":" + (portOffset + udpPort) + ":" + udpPort + "/udp";
+                    ? addBracketsIfNeeded(ipAddress) + "::" + udpPort + "/udp"
+                    : addBracketsIfNeeded(ipAddress) + ":" + (portOffset + udpPort) + ":" + udpPort + "/udp";
+        }
+
+        private static String addBracketsIfNeeded(String ipAddress) {
+            return DockerContainer.ipv6Enabled() && !ipAddress.contains("[") ? String.format("[%s]", ipAddress) : ipAddress;
         }
     }
 }

@@ -2,7 +2,7 @@
 # Runs sshd and allow the 'test' user to login
 #
 
-FROM ubuntu:bionic
+FROM ubuntu:noble
 
 # install SSHD
 RUN apt-get update -y && \

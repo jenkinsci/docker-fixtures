@@ -85,7 +85,7 @@ public class JavaContainerTest {
     @Test
     public void smokes() throws Exception {
         JavaContainer c = rule.get();
-        assertThat(c.popen(new CommandBuilder("java", "-version")).verifyOrDieWith("could not launch Java"), containsString("openjdk version \"11"));
+        assertThat(c.popen(new CommandBuilder("java", "-version")).verifyOrDieWith("could not launch Java"), containsString("openjdk version \"17"));
         c.sshWithPublicKey(new CommandBuilder("id"));
     }
 

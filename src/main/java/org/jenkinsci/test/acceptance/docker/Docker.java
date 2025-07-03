@@ -69,7 +69,7 @@ public class Docker {
             return psOutput.contains(container);
         }
         // docker command errored - and it does not do this if there is no match.
-        System.err.println("docker ps failed with code: " + pExit + 
+        System.err.println("docker ps failed with code: " + pExit +
                           (psOutput != null ? " and output: " + psOutput : " and provided no output"));
         return false;
     }
@@ -138,7 +138,7 @@ public class Docker {
         return image;
     }
 
-    static void dump(File log) throws IOException {
+    public static void dump(File log) throws IOException {
         if (log != null) {
             System.out.println("---%<--- " + log.getName());
             FileUtils.copyFile(log, System.out);

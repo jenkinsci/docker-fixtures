@@ -8,7 +8,7 @@ FROM jenkins/sshd:23e678bc2c56
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
         software-properties-common \
-        openjdk-17-jdk-headless \
+        openjdk-21-jdk-headless \
         curl \
         ant \
         maven

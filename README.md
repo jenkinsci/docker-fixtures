@@ -1,3 +1,5 @@
+**DEPRECATED** in favor of [testcontainers.org](https://www.testcontainers.org/).
+
 # Overview
 
 A Docker test fixture system available for use from any JUnit tests,
@@ -14,8 +16,6 @@ with different filesystem paths, user accounts, etc.
 Note that the typical architecture is that of a single machine with a local Docker daemon.
 Tests are assumed to be running on the host itself;
 i.e., this is unlike a multicontainer test system you might orchestrate with Docker Compose.
-
-Probably this library should be deprecated in favor of [testcontainers.org](https://www.testcontainers.org/).
 
 # Usage
 
